@@ -60,3 +60,10 @@ Run the built container image:
 ```sh
 docker run --rm -d -p 8000:8000 localhost/image-converter:latest
 ```
+
+## Demo Credentials
+
+Following credentials can be used for HTTP Basic Auth for testing:
+
+- Username: `cns_demo`
+- Password: `cns_demo`
