@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: CNS Image Converter
+  description: A microservice to convert images to different formats and sizes.
+  version: 1.0.0
+  contact:
+    url: https://cnsbd.com
+    name: CNS Ltd.
+servers:
+  - url: /
+    description: Current Site
+  - url: http://127.0.0.1:8000
+    description: Loopback Server
+
+paths:
+  /convert-image:
+    post:
+      tags:
+        - CONVERT IMAGE
+      summary: Convert Image and Resize
+      description: Convert an image to another format. Also resizing is possible.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              description: |
+                If you want to resize the image then specify
+                both width and height fields. Skipping either width or height
+                will skip image resize.
+              properties:
+                image:
+                  type: string
+                  format: binary
+                format:
+                  type: string
+                  enum: [ WSQ, PNG, JPG, GIF, TIFF, BMP ]
+                  description: Target image format.
+                width:
+                  type: integer
+                  minimum: 1
+                  description: Resize image to this width
+                height:
+                  type: integer
+                  minimum: 1
+                  description: Resize image to this height
+                keep_ratio:
+                  type: integer
+                  enum: [ 0, 1 ]
+                  description: Whether to keep aspect ratio during resize
+                grayscale:
+                  type: integer
+                  enum: [ 0, 1 ]
+                  description: Whether to convert image color to grayscale
+              required:
+                - image
+                - format
+      responses:
+        '200':
+          description: Conversion successful
+          content:
+            image/*: { }
+            application/octet-stream: { }
+        '400':
+          description: Invalid or missing input fields
+          content:
+            text/html: { }
+        '401':
+          description: Authentication failed
+          content:
+            text/html: { }
+        '5XX':
+          description: Something went wrong
+          content:
+            text/html: { }
+
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+security:
+  - BasicAuth: [ ]
+
+tags:
+  - name: CONVERT IMAGE
